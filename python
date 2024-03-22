@@ -1,0 +1,50 @@
+import time
+from datetime import datetime, timedelta
+
+def countdown(t):
+    # Define a list of darker color codes to cycle through with a white background
+    colors = [
+        '\033[30;107m',  # Black text on white background for visibility
+        '\033[34;107m',  # Dark Blue text on white background
+        '\033[32;107m',  # Dark Green text on white background
+        '\033[31;107m',  # Dark Red text on white background
+        '\033[35;107m',  # Dark Magenta text on white background
+        '\033[36;107m'   # Dark Cyan text on white background
+    ]
+    color_index = 0
+
+    # Calculate the end time by adding the countdown duration to the current time
+    end_time = datetime.now() + timedelta(seconds=t)
+
+    # Print a top border for the "container"
+    print('\033[107m' + ' ' * 20 + '\033[0m')
+
+    while True:
+        # Calculate the time difference between now and the end time
+        time_diff = end_time - datetime.now()
+
+        # Break the loop if the time difference is zero or negative
+        if time_diff.total_seconds() <= 0:
+            break
+
+        # Convert the time difference to minutes and seconds
+        mins, secs = divmod(time_diff.total_seconds(), 60)
+        timer = '{:02d}:{:02d}'.format(int(mins), int(secs))
+
+        # Print the timer with the current color and white background, centered in the "container"
+        print('\033[107m' + ' ' * 7 + f"{colors[color_index]}{timer}\033[0m" + ' ' * 7, end="\r")
+
+        # Update the color index to cycle through colors
+        color_index = (color_index + 1) % len(colors)
+
+        time.sleep(1)
+
+    # Reset color and print final message, surrounded by the "container" background
+    print('\033[107m' + ' ' * 20 + '\033[0m')
+    print('\033[0;107m' + 'Time\'s up!'.center(20) + '\033[0m')
+
+# Input time in seconds
+t = input("Enter the time in seconds: ")
+
+# Function call
+countdown(int(t))
